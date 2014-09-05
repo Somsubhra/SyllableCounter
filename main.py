@@ -1,5 +1,5 @@
 # All python imports
-from os import walk, path, stat, mkdir
+from os import walk, path, stat, mkdir, makedirs
 
 # All constant definitions
 INPUT_DIRECTORY = 'corpus'
@@ -9,10 +9,15 @@ OUTPUT_DIRECTORY = 'out'
 class SyllableCounter:
 
   # Count the number of syllables
-  def count(self, inputFile, outputFile):
-    print inputFile
-    print outputFile
+  def count(self, inputFileName, outputFileName):
+    inputFile = open(inputFileName)
+    content = inputFile.read()
 
+    outputFile = open(outputFileName, 'w+')
+    outputFile.write(content)
+
+    inputFile.close()
+    outputFile.close()
 
 # The main method
 def main():
@@ -38,7 +43,16 @@ def main():
   for(dirPath, _, fileNames) in walk(INPUT_DIRECTORY):
     for fileName in fileNames:
       inputFile = path.join(dirPath, fileName)
-      c.count(inputFile, path.join(OUTPUT_DIRECTORY, dirPath, fileName))
+
+      outputFile = path.join(OUTPUT_DIRECTORY, dirPath, fileName)
+      outputDir = path.join(OUTPUT_DIRECTORY, dirPath)
+
+      try:
+        stat(outputDir)
+      except:
+        makedirs(outputDir)
+
+      c.count(inputFile, outputFile)
 
 if __name__ == '__main__':
   main()
