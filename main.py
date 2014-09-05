@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+
+"""main.py: Counts number of syllables in words"""
+
+__author__ = "Somsubhra Bairi"
+__copyright__ = "Copyright 2014, Somsubhra Bairi"
+__license__ = "Apache License, Version 2.0"
+__email__ = "somsubhra.bairi@gmail.com"
+
 # All python imports
 from os import walk, path, stat, mkdir, makedirs
 
