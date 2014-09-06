@@ -134,9 +134,17 @@ class SyllableCounter:
   def count(self, input_file_name, output_file_name):
     input_file = open(input_file_name)
     content = input_file.read()
+    content = content.decode("utf-8")
+
+    words = content.split()
+
+    print "Parsing input file " + input_file_name + " containing " + str(len(words)) + " words..."
 
     output_file = open(output_file_name, 'w+')
-    output_file.write(content)
+
+    for word in words:
+      output_file.write(word.encode("utf-8"))
+      output_file.write("\n")
 
     input_file.close()
     output_file.close()
