@@ -12,9 +12,9 @@ Python 2.*
 Run
 ==============
 
-1.) Place corpus/input data in 'corpus/' directory.
+    - Place corpus/input data in 'corpus/' directory.
 
-2.) Run './main.py' or 'python main.py'.
+    - Run './main.py' or 'python main.py'.
 
 The output is generated in out/ directory.
 
