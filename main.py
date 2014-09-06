@@ -130,7 +130,23 @@ class GujaratiUTF:
 # The syllable counter class
 class SyllableCounter:
 
-  # Count the number of syllables
+  # Strips the word so that only consonants remain
+  def strip(self, word):
+    # Replace all the breakers appearing in the word
+    for breaker in GujaratiUTF.breakers:
+      word.replace(breaker, '')
+
+    # Strip all the vowels
+    stripped_word = ''.join([s for s in word if s in GujaratiUTF.ordered_consonants])
+
+    return stripped_word
+
+  # Count the number of syllables in the word
+  def number_of_syllables(self, word):
+    stripped_word = self.strip(word)
+    print stripped_word
+
+  # Count the number of syllables for all words in file
   def count(self, input_file_name, output_file_name):
     input_file = open(input_file_name)
     content = input_file.read()
@@ -144,6 +160,7 @@ class SyllableCounter:
 
     for word in words:
       output_file.write(word.encode("utf-8"))
+      self.number_of_syllables(word)
       output_file.write("\n")
 
     input_file.close()
