@@ -121,13 +121,14 @@ class GujaratiUTF:
   ordered_consonants = [l_ha, l_a, l_ka, l_ga, l_kha, l_gha, l_ca, l_ja, l_cha, l_sha, l_jha, l_ssa, l_nya,
                         l_ya, l_da, l_dha, l_tha, l_ta, l_na, l_la, l_ra, l_sa, l_tta, l_dda, l_ddha, l_ttha,
                         l_nna, l_lla, l_nga, l_pha, l_va, l_ma, l_bha, l_ba, l_pa]
-
 ##########################################
 ## End Gujarati Universal Character Set ##
 ##########################################
 
 
-# The syllable counter class
+##########################################
+##       The syllable counter class     ##
+##########################################
 class SyllableCounter:
 
   # Strips the word so that only consonants remain
@@ -143,8 +144,42 @@ class SyllableCounter:
 
   # Count the number of syllables in the word
   def number_of_syllables(self, word):
+
+    # Get the stripped word
     stripped_word = self.strip(word)
-    print stripped_word
+
+    no_syllables = 1
+    count = 1
+    length = len(stripped_word)
+
+    if length > 3:
+      state = GujaratiUTF.ordered_consonants.index(stripped_word[1]) > GujaratiUTF.ordered_consonants.index(stripped_word[0])
+
+    for i in range(2, length - 1):
+
+      if count == 2:
+        count = 0
+        no_syllables += 1
+
+      if state:
+        if GujaratiUTF.ordered_consonants.index(stripped_word[i]) < GujaratiUTF.ordered_consonants.index(stripped_word[i-1]):
+          count = 0
+          no_syllables += 1
+          state = GujaratiUTF.ordered_consonants.index(stripped_word[i+1]) > GujaratiUTF.ordered_consonants.index(stripped_word[i])
+          continue
+      else:
+        if GujaratiUTF.ordered_consonants.index(stripped_word[i]) > GujaratiUTF.ordered_consonants.index(stripped_word[i-1]):
+          count = 0
+          no_syllables += 1
+          state = GujaratiUTF.ordered_consonants.index(stripped_word[i+1]) > GujaratiUTF.ordered_consonants.index(stripped_word[i])
+          continue
+
+      count += 1
+
+    if count == 2:
+      no_syllables += 1
+
+    return no_syllables
 
   # Count the number of syllables for all words in file
   def count(self, input_file_name, output_file_name):
@@ -156,18 +191,26 @@ class SyllableCounter:
 
     print "Parsing input file " + input_file_name + " containing " + str(len(words)) + " words..."
 
-    output_file = open(output_file_name, 'w+')
+    output_file = open(output_file_name + ".csv", 'w+')
+
+    output_file.write("Word;Syllables\n")
 
     for word in words:
       output_file.write(word.encode("utf-8"))
-      self.number_of_syllables(word)
+      syllables = self.number_of_syllables(word)
+      output_file.write(";" + str(syllables))
       output_file.write("\n")
 
     input_file.close()
     output_file.close()
+##########################################
+##       End syllable counter class     ##
+##########################################
 
 
-# The main method
+##########################################
+##            The main method           ##
+##########################################
 def main():
 
   # Check for the input directory
@@ -202,6 +245,9 @@ def main():
         makedirs(output_dir)
 
       c.count(input_file, output_file)
+##########################################
+##            End main method           ##
+##########################################
 
 
 if __name__ == '__main__':
