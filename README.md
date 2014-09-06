@@ -7,16 +7,16 @@ Counts number of syllables in words in Indian Languages.
 Prerequisites
 ==============
 
-Python 2.*
+- Python 2.*
 
 Run
 ==============
 
-    - Place corpus/input data in 'corpus/' directory.
+- Place corpus/input data in 'corpus/' directory.
 
-    - Run './main.py' or 'python main.py'.
+- Run './main.py' or 'python main.py'.
 
-The output is generated in out/ directory.
+- The output is generated in out/ directory.
 
 License
 =======
