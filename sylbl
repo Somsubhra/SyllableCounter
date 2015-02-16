@@ -14,9 +14,6 @@ from os import walk, path, stat, mkdir, makedirs
 INPUT_DIRECTORY = 'corpus'
 OUTPUT_DIRECTORY = 'out'
 
-HINDI = 0
-GUJARATI = 1
-
 
 ##########################################
 ##  The Hindi Universal Character Set   ##
@@ -325,22 +322,22 @@ class SyllableCounter:
 
     # Strips the word so that only consonants remain
     @staticmethod
-    def strip(word):
+    def strip(word, utf_class):
         # Replace all the breakers appearing in the word
-        for breaker in GujaratiUTF.breakers:
+        for breaker in utf_class.breakers:
             word.replace(breaker, '')
 
         # Strip all the vowels
-        stripped_word = ''.join([s for s in word if s in GujaratiUTF.ordered_consonants])
+        stripped_word = ''.join([s for s in word if s in utf_class.ordered_consonants])
 
         return stripped_word
 
     # Count the number of syllables in the word
     @staticmethod
-    def number_of_syllables(word):
+    def number_of_syllables(word, utf_class):
 
         # Get the stripped word
-        stripped_word = SyllableCounter.strip(word)
+        stripped_word = SyllableCounter.strip(word, utf_class)
 
         no_syllables = 1
         count = 1
@@ -349,8 +346,8 @@ class SyllableCounter:
         state = True
 
         if length > 3:
-            state = GujaratiUTF.ordered_consonants.index(stripped_word[1]) \
-                > GujaratiUTF.ordered_consonants.index(stripped_word[0])
+            state = utf_class.ordered_consonants.index(stripped_word[1]) \
+                > utf_class.ordered_consonants.index(stripped_word[0])
 
         for i in range(2, length - 1):
 
@@ -359,20 +356,20 @@ class SyllableCounter:
                 no_syllables += 1
 
             if state:
-                if GujaratiUTF.ordered_consonants.index(stripped_word[i]) \
-                        < GujaratiUTF.ordered_consonants.index(stripped_word[i-1]):
+                if utf_class.ordered_consonants.index(stripped_word[i]) \
+                        < utf_class.ordered_consonants.index(stripped_word[i-1]):
                     count = 0
                     no_syllables += 1
-                    state = GujaratiUTF.ordered_consonants.index(stripped_word[i+1]) \
-                        > GujaratiUTF.ordered_consonants.index(stripped_word[i])
+                    state = utf_class.ordered_consonants.index(stripped_word[i+1]) \
+                        > utf_class.ordered_consonants.index(stripped_word[i])
                     continue
             else:
-                if GujaratiUTF.ordered_consonants.index(stripped_word[i]) \
-                        > GujaratiUTF.ordered_consonants.index(stripped_word[i-1]):
+                if utf_class.ordered_consonants.index(stripped_word[i]) \
+                        > utf_class.ordered_consonants.index(stripped_word[i-1]):
                     count = 0
                     no_syllables += 1
-                    state = GujaratiUTF.ordered_consonants.index(stripped_word[i+1]) \
-                        > GujaratiUTF.ordered_consonants.index(stripped_word[i])
+                    state = utf_class.ordered_consonants.index(stripped_word[i+1]) \
+                        > utf_class.ordered_consonants.index(stripped_word[i])
                     continue
 
             count += 1
@@ -382,9 +379,10 @@ class SyllableCounter:
 
         return no_syllables
 
-    # Detects the language of the file
+    # Detects the language of the file and returns the UTF
     @staticmethod
-    def detect_language(input_file_name):
+    def get_utf_class(input_file_name):
+
         input_file = open(input_file_name)
         content = input_file.read()
         content = content.decode("utf-8")
@@ -394,10 +392,10 @@ class SyllableCounter:
         for word in words:
             for char in word:
                 if char in HindiUTF.symbols.values():
-                    return HINDI
+                    return HindiUTF
 
                 if char in GujaratiUTF.symbols.values():
-                    return GUJARATI
+                    return GujaratiUTF
 
         return -1
 
@@ -405,9 +403,7 @@ class SyllableCounter:
     @staticmethod
     def count(input_file_name, output_file_name):
 
-        language = SyllableCounter.detect_language(input_file_name)
-
-        print language
+        utf_class = SyllableCounter.get_utf_class(input_file_name)
 
         input_file = open(input_file_name)
         content = input_file.read()
@@ -423,7 +419,7 @@ class SyllableCounter:
 
         for word in words:
             output_file.write(word.encode("utf-8"))
-            syllables = SyllableCounter.number_of_syllables(word)
+            syllables = SyllableCounter.number_of_syllables(word, utf_class)
             output_file.write(";" + str(syllables))
             output_file.write("\n")
 
