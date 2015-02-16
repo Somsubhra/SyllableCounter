@@ -392,9 +392,11 @@ class SyllableCounter:
         for word in words:
             for char in word:
                 if char in HindiUTF.symbols.values():
+                    print "Detected Hindi."
                     return HindiUTF
 
                 if char in GujaratiUTF.symbols.values():
+                    print "Detected Gujarati."
                     return GujaratiUTF
 
         return -1
@@ -402,6 +404,8 @@ class SyllableCounter:
     # Count the number of syllables for all words in file
     @staticmethod
     def count(input_file_name, output_file_name):
+
+        print "Processing file " + input_file_name + "."
 
         utf_class = SyllableCounter.get_utf_class(input_file_name)
 
@@ -411,7 +415,7 @@ class SyllableCounter:
 
         words = content.split()
 
-        print "Parsing input file " + input_file_name + " containing " + str(len(words)) + " words..."
+        print "Parsing input file " + input_file_name + " containing " + str(len(words)) + " words."
 
         output_file = open(output_file_name + ".csv", 'w+')
 
@@ -425,6 +429,8 @@ class SyllableCounter:
 
         input_file.close()
         output_file.close()
+
+        print "Output written to " + output_file_name + ".csv.\n"
 
 ##########################################
 ##       End syllable counter class     ##
