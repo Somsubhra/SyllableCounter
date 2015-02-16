@@ -14,6 +14,9 @@ from os import walk, path, stat, mkdir, makedirs
 INPUT_DIRECTORY = 'corpus'
 OUTPUT_DIRECTORY = 'out'
 
+HINDI = 0
+GUJARATI = 1
+
 
 ##########################################
 ##  The Hindi Universal Character Set   ##
@@ -379,9 +382,33 @@ class SyllableCounter:
 
         return no_syllables
 
+    # Detects the language of the file
+    @staticmethod
+    def detect_language(input_file_name):
+        input_file = open(input_file_name)
+        content = input_file.read()
+        content = content.decode("utf-8")
+
+        words = content.split()
+
+        for word in words:
+            for char in word:
+                if char in HindiUTF.symbols.values():
+                    return HINDI
+
+                if char in GujaratiUTF.symbols.values():
+                    return GUJARATI
+
+        return -1
+
     # Count the number of syllables for all words in file
     @staticmethod
     def count(input_file_name, output_file_name):
+
+        language = SyllableCounter.detect_language(input_file_name)
+
+        print language
+
         input_file = open(input_file_name)
         content = input_file.read()
         content = content.decode("utf-8")
