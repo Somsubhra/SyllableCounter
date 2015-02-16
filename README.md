@@ -1,8 +1,7 @@
 SyllableCounter
 ==============
 
-Counts number of syllables in words in Indian Languages.
-(Right now, it is in Gujarati only)
+Counts number of syllables in words in Indian Languages(Hindi and Gujarati) using a consonant based rule.
 
 Prerequisites
 ==============
@@ -14,7 +13,7 @@ Run
 
 - Place corpus/input data in 'corpus/' directory.
 
-- Run './main.py' or 'python main.py'.
+- Run './sylbl' or 'python sylbl'.
 
 - The output is generated in out/ directory.
 
